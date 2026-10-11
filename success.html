@@ -25,7 +25,7 @@
   <main class="card">
     <div class="check">✓</div>
     <h1>Payment successful</h1>
-    <p>Your download link(s) will arrive by email shortly.</p>
+    <p id="emailNote">Your download link(s) will arrive by email shortly.</p>
     <div><span class="ref" id="ref">ref: —</span></div>
 
     <div class="downloads" id="downloads">
@@ -55,6 +55,8 @@
     const box = document.getElementById('downloads');
     const item = CATALOG[key];
     if (item) {
+      document.getElementById('emailNote').textContent =
+        'Your receipt was emailed to you. Your file is ready below — yours to keep forever.';
       box.innerHTML =
         '<p style="margin:0 0 12px;"><strong>' + item.name + '</strong></p>' +
         '<a class="dl-btn" style="display:block;width:100%;padding:14px;border-radius:10px;background:#1d4ed8;color:#fff;font-size:15px;font-weight:700;text-decoration:none;" href="' + item.file + '" download>Download your PDF</a>' +
