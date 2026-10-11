@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Successful — EduDoc Vault</title>
+  <style>
+    :root { --bg: #f6f7fb; --card: #ffffff; --ink: #1c2430; --muted: #6b7280; --accent: #1d4ed8; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--ink); display: flex; min-height: 100vh; align-items: center; justify-content: center; padding: 24px; }
+    .card { background: var(--card); border-radius: 16px; box-shadow: 0 12px 40px rgba(15, 23, 42, .10); max-width: 560px; width: 100%; padding: 40px 36px; text-align: center; }
+    .check { width: 64px; height: 64px; border-radius: 50%; background: #dcfce7; color: #15803d; font-size: 32px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { color: var(--muted); line-height: 1.6; }
+    .ref { display: inline-block; margin-top: 8px; padding: 6px 14px; background: #eef2ff; border-radius: 999px; font-family: ui-monospace, monospace; font-size: 13px; color: var(--accent); }
+    .downloads { margin: 24px 0 8px; display: grid; gap: 10px; }
+    /* PLACEHOLDER buttons: wire these to secure expiring download links
+       after the webhook fulfillment is implemented. Disabled for now. */
+    .dl-btn { display: block; width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #e5e7eb; background: #f9fafb; color: #9ca3af; font-size: 15px; cursor: not-allowed; }
+    .home { display: inline-block; margin-top: 20px; color: var(--accent); text-decoration: none; font-weight: 600; }
+    .disclaimer { margin-top: 28px; padding-top: 16px; border-top: 1px solid #eef0f4; font-size: 12px; color: #9ca3af; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="check">✓</div>
+    <h1>Payment successful</h1>
+    <p>Your download link(s) will arrive by email shortly.</p>
+    <div><span class="ref" id="ref">ref: —</span></div>
+
+    <div class="downloads" id="downloads">
+      <!-- Filled by script: shows the download button for the purchased product. -->
+    </div>
+
+    <a class="home" href="index.html">← Back to EduDoc Vault</a>
+
+    <p class="disclaimer">These templates are organizational tools, not legal advice.</p>
+  </main>
+
+  <script>
+    // Show the download button for the purchased product.
+    // The Stripe payment link redirects here with ?product=<key>.
+    const CATALOG = {
+      iep_tracker:    { name: "Master IEP & 504 Accommodation Tracker", file: "assets/docs/iep-tracker.pdf" },
+      mtss_pack:      { name: "MTSS Tier 2/3 Behavioral Intervention Pack", file: "assets/docs/mtss-intervention-pack.pdf" },
+      sub_plan:       { name: "Sub-Plan Emergency System", file: "assets/docs/sub-plan-system.pdf" },
+      crisis_toolkit: { name: "De-Escalation & Crisis Incident Toolkit", file: "assets/docs/crisis-toolkit.pdf" },
+    };
+    const params = new URLSearchParams(window.location.search);
+    const sid = params.get('session_id');
+    if (sid && sid.length >= 8) {
+      document.getElementById('ref').textContent = 'ref: ' + sid.slice(0, 8) + '…';
+    }
+    const key = params.get('product');
+    const box = document.getElementById('downloads');
+    const item = CATALOG[key];
+    if (item) {
+      box.innerHTML =
+        '<p style="margin:0 0 12px;"><strong>' + item.name + '</strong></p>' +
+        '<a class="dl-btn" style="display:block;width:100%;padding:14px;border-radius:10px;background:#1d4ed8;color:#fff;font-size:15px;font-weight:700;text-decoration:none;" href="' + item.file + '" download>Download your PDF</a>' +
+        '<p style="font-size:13px;margin:12px 0 0;">Print it or open it in any PDF app — every field is fillable, and your data stays on your device.</p>';
+    } else {
+      box.innerHTML =
+        '<p style="margin:0;">Your download link(s) will arrive by email shortly.</p>';
+    }
+  </script>
+</body>
+</html>
